@@ -57,14 +57,13 @@ loop do
       when "GET"
         if count_args == 1
           data, ok = storage.get(args[0])
-          if ok
-            res.echo(data)
-          else
-            res.negative_string
-          end
+          ok ? res.echo(data) : res.negative_string
         else
           res.invalid_argument(command)
         end
+      # ref: https://redis.io/commands/del/
+      when "DEL"
+        res.integer(storage.delete(args))
       else
         res.unknown_command(command)
       end

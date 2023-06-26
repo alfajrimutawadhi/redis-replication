@@ -13,7 +13,11 @@ class Response < Resp
     end
 
     def echo(msg)
-        @@client.write("#{BULK_STRINGS}#{msg.length}\r\n#{msg}\r\n")
+      @@client.write("#{BULK_STRINGS}#{msg.length}\r\n#{msg}\r\n")
+    end
+
+    def integer(num)
+      @@client.write("#{INTEGERS}#{num}\r\n")
     end
 
     def negative_string
