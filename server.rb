@@ -1,14 +1,30 @@
 require "socket"
+require_relative "protocol/resp"
 
-puts "Start redis server\nLogs program will appear here!\n"
-server = TCPServer.new(6379)
-
-loop do
-  client = server.accept
-  until client.eof?
-    client.write "+PONG\r\n"
-  end
-  client.close
+begin
+  server = TCPServer.new(6379)
+rescue => e
+  puts e
+  exit
 end
 
-server.close
+puts "Start redis server\nLogs program will appear here!\n"
+
+loop do
+  Thread.start(server.accept) do |client|
+    until client.eof?
+      buf = client.readpartial(1024)
+      resp = Resp.new(buf)
+      resp.decode
+      requests = resp.get_requests
+      command = requests[0]
+      case command.upcase
+      when "PING"
+        client.write "+PONG\r\n"
+      else
+        client.write "-ERR Unknown command '#{command}'\r\n"
+      end
+    end
+    client.close
+  end
+end
