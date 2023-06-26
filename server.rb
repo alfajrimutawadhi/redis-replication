@@ -1,5 +1,7 @@
 require "socket"
 require_relative "protocol/resp"
+require_relative "protocol/request"
+require_relative "protocol/response"
 
 begin
   server = TCPServer.new(6379)
@@ -14,15 +16,16 @@ loop do
   Thread.start(server.accept) do |client|
     until client.eof?
       buf = client.readpartial(1024)
-      resp = Resp.new(buf)
-      resp.decode
-      requests = resp.get_requests
+      req = Request.new(buf)
+      req.decode
+      requests = req.get_requests
       command = requests[0]
+      res = Response.new(client)
       case command.upcase
       when "PING"
-        client.write "+PONG\r\n"
+        res.pong
       else
-        client.write "-ERR Unknown command '#{command}'\r\n"
+        res.unknown_command(command)
       end
     end
     client.close
