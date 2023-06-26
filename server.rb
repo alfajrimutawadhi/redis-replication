@@ -63,7 +63,11 @@ loop do
         end
       # ref: https://redis.io/commands/del/
       when "DEL"
-        res.integer(storage.delete(args))
+        if count_args > 0
+          res.integer(storage.delete(args))
+        else
+          res.invalid_argument(command)
+        end
       else
         res.unknown_command(command)
       end
