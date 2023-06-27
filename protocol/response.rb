@@ -20,7 +20,7 @@ class Response < Resp
       @@client.write("#{INTEGERS}#{num}\r\n")
     end
 
-    def negative_string
+    def nil
       @@client.write("#{BULK_STRINGS}-1\r\n")
     end
 

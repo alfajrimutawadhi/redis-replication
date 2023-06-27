@@ -48,11 +48,28 @@ loop do
         if count_args == 2
           storage.set(args[0], args[1], nil)
           res.ok
+        elsif count_args == 3
+          type = args[2].upcase
+          if storage.type_data_set_is_valid?(type)
+            ok = storage.set_nx_xx(args[0], args[1], type)
+            ok ? res.ok : res.nil
+          else
+            res.invalid_argument(command)
+          end
         elsif count_args == 4
           adv = args[2].upcase
-          if adv == "EX" || adv == "PX"
+          if storage.adv_expired_time_is_valid?(adv) && !!/\A\d+\z/.match(args[3])  # check is number
             storage.set_with_expired(args[0], args[1], adv, args[3])
             res.ok
+          else
+            res.invalid_argument(command)
+          end
+        elsif count_args == 5
+          type = args[2].upcase
+          adv = args[3].upcase
+          if storage.type_data_set_is_valid?(type) && storage.adv_expired_time_is_valid?(adv) && !!/\A\d+\z/.match(args[4])
+            ok = storage.set_nx_xx_with_expired(args[0], args[1], type, adv, args[4])
+            ok ? res.ok : res.nil
           else
             res.invalid_argument(command)
           end
@@ -63,7 +80,7 @@ loop do
       when "GET"
         if count_args == 1
           data, ok = storage.get(args[0])
-          ok ? res.echo(data) : res.negative_string
+          ok ? res.echo(data) : res.nil
         else
           res.invalid_argument(command)
         end
