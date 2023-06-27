@@ -1,9 +1,7 @@
 require "socket"
-
 require_relative "protocol/resp"
 require_relative "protocol/request"
 require_relative "protocol/response"
-
 require_relative "storage/storage"
 
 begin
@@ -48,8 +46,16 @@ loop do
       # ref: https://redis.io/commands/set/
       when "SET"
         if count_args == 2
-          storage.set(args[0], args[1])
+          storage.set(args[0], args[1], nil)
           res.ok
+        elsif count_args == 4
+          adv = args[2].upcase
+          if adv == "EX" || adv == "PX"
+            storage.set_with_expired(args[0], args[1], adv, args[3])
+            res.ok
+          else
+            res.invalid_argument(command)
+          end
         else
           res.invalid_argument(command)
         end
