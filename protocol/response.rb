@@ -29,6 +29,10 @@ class Response < Resp
     end
 
     def invalid_argument(command)
-        @@client.write("#{ERRORS}ERR wrong number of arguments for '#{command}' command\r\n")
+      @@client.write("#{ERRORS}ERR wrong number of arguments for '#{command}' command\r\n")
+    end
+
+    def syntax_error
+      @@client.write("#{ERRORS}syntax error\r\n")
     end
 end

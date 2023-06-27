@@ -37,6 +37,7 @@ class Storage
 
     # adv is [EX seconds | PX milliseconds]
     def set_with_expired(key, value, adv, t)
+      # t is seconds
       if adv == "EX"
         set(key, value, Time.now + t.to_i)
       else

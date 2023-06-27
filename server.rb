@@ -54,7 +54,7 @@ loop do
             ok = storage.set_nx_xx(args[0], args[1], type)
             ok ? res.ok : res.nil
           else
-            res.invalid_argument(command)
+            res.syntax_error
           end
         elsif count_args == 4
           adv = args[2].upcase
@@ -62,7 +62,7 @@ loop do
             storage.set_with_expired(args[0], args[1], adv, args[3])
             res.ok
           else
-            res.invalid_argument(command)
+            res.syntax_error
           end
         elsif count_args == 5
           type = args[2].upcase
@@ -71,7 +71,7 @@ loop do
             ok = storage.set_nx_xx_with_expired(args[0], args[1], type, adv, args[4])
             ok ? res.ok : res.nil
           else
-            res.invalid_argument(command)
+            res.syntax_error
           end
         else
           res.invalid_argument(command)
