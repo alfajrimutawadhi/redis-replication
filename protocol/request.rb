@@ -33,7 +33,7 @@ class Request < Resp
       num = get_number
       s = @@buf[..num-1]
       # remove '\r\n'
-      @@buf = @@buf[num+2..]
+      @@buf = @@buf[num+2..@@buf.length-2]
       s
     end
 
