@@ -2,19 +2,19 @@ require "time"
 
 class Data
   def initialize(value, expired)
-    @@value = value
-    @@expired = expired
+    @value = value
+    @expired = expired
   end
 
   public
     def get_value
-      @@value
+      @value
     end
 
     def is_expired?
-      if @@expired.nil?
+      if @expired.nil?
         return false
       end
-      @@expired < Time.now
+      @expired < Time.now
     end
 end

@@ -31,9 +31,12 @@ class Request < Resp
 
     def decode_bulk_strings
       num = get_number
+      if num == 0
+        return ""
+      end
       s = @@buf[..num-1]
       # remove '\r\n'
-      @@buf = @@buf[num+2..@@buf.length-1]
+      @@buf = @@buf[num+2..]
       s
     end
 
