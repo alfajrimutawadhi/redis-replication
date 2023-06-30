@@ -35,6 +35,6 @@ Steps :
     ```
 - Run command
     ```bash
-    exec ruby server.rb
+    ruby server.rb
     ```
 - You can operate your redis-client now
